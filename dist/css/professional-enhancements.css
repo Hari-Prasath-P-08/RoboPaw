@@ -206,10 +206,11 @@ body {
   color: var(--primary-color) !important;
 }
 
-/* Responsive Improvements */
+/* Enhanced Mobile Responsiveness */
 @media (max-width: 768px) {
   #app {
-    padding: 12px;
+    padding: 8px;
+    min-height: 100vh;
   }
   
   .mod-sheet .mod-title {
@@ -218,11 +219,84 @@ body {
   }
   
   .mod-sheet .mod-wrapper {
-    padding: 16px !important;
+    padding: 12px !important;
   }
   
   .v-btn {
-    min-height: 44px !important; /* Touch-friendly buttons */
+    min-height: 48px !important; /* Touch-friendly buttons */
+    font-size: 14px !important;
+    margin: 4px !important;
+  }
+  
+  /* Mobile video adjustments */
+  .vedio-wrapper {
+    margin-bottom: 16px !important;
+  }
+  
+  /* Mobile control grid improvements */
+  .v-row {
+    margin: 0 !important;
+  }
+  
+  .v-col {
+    padding: 4px !important;
+  }
+  
+  /* Mobile status indicators */
+  .status-wrapper .chips {
+    padding: 8px 12px !important;
+    margin: 4px 0 !important;
+    font-size: 12px !important;
+  }
+  
+  /* Mobile slider improvements */
+  .v-slider {
+    margin: 8px 0 !important;
+  }
+  
+  .v-slider .v-slider__thumb {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+/* Extra small devices (phones in portrait) */
+@media (max-width: 480px) {
+  #app {
+    padding: 4px;
+  }
+  
+  .mod-sheet .mod-title {
+    font-size: 0.9rem !important;
+    padding: 8px 12px !important;
+  }
+  
+  .mod-sheet .mod-wrapper {
+    padding: 8px !important;
+  }
+  
+  .v-btn {
+    min-height: 52px !important;
+    font-size: 13px !important;
+    padding: 0 8px !important;
+  }
+  
+  /* Stack controls vertically on very small screens */
+  .v-col {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .vedio-wrapper {
+    height: 200px !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .mod-sheet {
+    margin-bottom: 8px !important;
   }
 }
 
@@ -291,6 +365,50 @@ body {
   outline-offset: 2px;
 }
 
+/* Mobile Touch Improvements */
+@media (max-width: 768px) {
+  /* Better touch targets */
+  .v-btn, .v-slider__thumb, .v-chip {
+    -webkit-tap-highlight-color: rgba(25, 118, 210, 0.2);
+    touch-action: manipulation;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Mobile-friendly video controls */
+  .vedio-wrapper {
+    position: relative;
+    touch-action: pan-x pan-y;
+  }
+  
+  /* Mobile gesture support */
+  .mod-sheet {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Touch device specific improvements */
+@media (hover: none) and (pointer: coarse) {
+  .v-btn:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-light) !important;
+  }
+  
+  .v-btn:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-medium) !important;
+  }
+  
+  /* Larger touch targets for small screens */
+  .v-btn {
+    min-height: 48px !important;
+    min-width: 48px !important;
+  }
+}
+
 /* Improved Accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -298,4 +416,187 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .v-btn {
+    border: 2px solid currentColor !important;
+  }
+  
+  .mod-sheet {
+    border: 1px solid var(--text-primary) !important;
+  }
+}
+
+/* Enhanced UI Components */
+
+/* Improved video feed styling */
+.vedio-wrapper .vedio {
+  border-radius: var(--border-radius-lg) !important;
+  filter: contrast(1.1) saturate(1.05) brightness(1.02);
+  transition: filter 0.3s ease;
+}
+
+.vedio-wrapper:hover .vedio {
+  filter: contrast(1.15) saturate(1.1) brightness(1.05);
+}
+
+/* Enhanced control buttons with better visual feedback */
+.v-btn.control-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%) !important;
+  color: var(--text-on-primary) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.v-btn.control-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.v-btn.control-button:hover::before {
+  left: 100%;
+}
+
+.v-btn.control-button:active {
+  transform: scale(0.95);
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+/* Enhanced status indicators */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: var(--border-radius-lg);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.status-indicator.online {
+  background: linear-gradient(135deg, var(--success) 0%, #66BB6A 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.status-indicator.offline {
+  background: linear-gradient(135deg, var(--error) 0%, #E53935 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.status-indicator.warning {
+  background: linear-gradient(135deg, var(--warning) 0%, #FFA726 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+}
+
+/* Enhanced loading states */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Enhanced card hover effects */
+.mod-sheet:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+/* Improved form controls */
+.v-text-field .v-input__control {
+  border-radius: var(--border-radius-md) !important;
+}
+
+.v-text-field .v-input__control .v-input__slot {
+  border-radius: var(--border-radius-md) !important;
+  box-shadow: var(--shadow-light) !important;
+  transition: all 0.3s ease !important;
+}
+
+.v-text-field .v-input__control .v-input__slot:focus-within {
+  box-shadow: var(--shadow-medium) !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* Enhanced slider styling */
+.v-slider .v-slider__track {
+  border-radius: 4px !important;
+  height: 6px !important;
+}
+
+.v-slider .v-slider__track-fill {
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%) !important;
+  border-radius: 4px !important;
+}
+
+.v-slider .v-slider__thumb {
+  background: var(--primary-color) !important;
+  border: 3px solid var(--surface) !important;
+  box-shadow: var(--shadow-medium) !important;
+  transition: all 0.3s ease !important;
+}
+
+.v-slider .v-slider__thumb:hover {
+  transform: scale(1.2);
+  box-shadow: var(--shadow-heavy) !important;
+}
+
+/* Enhanced chip styling */
+.v-chip {
+  border-radius: var(--border-radius-lg) !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow-light) !important;
+  transition: all 0.3s ease !important;
+}
+
+.v-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium) !important;
+}
+
+/* Connection status indicator */
+.connection-status {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 8px 16px;
+  border-radius: var(--border-radius-lg);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.connection-status.connected {
+  background: var(--success);
+  color: white;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.connection-status.disconnected {
+  background: var(--error);
+  color: white;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
 }

@@ -16,6 +16,7 @@ import json
 import app
 from esp32_serial import ESP32Serial
 import robot
+from config import FLASK_PORT, WEBSOCKET_PORT, WS_USERNAME, WS_PASSWORD
 
 ipaddr_check = "10.18.111.75"
 
@@ -29,7 +30,7 @@ def wifi_check():
 	time.sleep(5)
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		s.connect(("0.0.0.0", 5000))
+		s.connect(("0.0.0.0", FLASK_PORT))
 		ipaddr_check = s.getsockname()[0]
 		s.close()
 		print(ipaddr_check)
@@ -43,7 +44,7 @@ async def check_permit(websocket):
 	while True:
 		recv_str = await websocket.recv()
 		cred_dict = recv_str.split(":")
-		if cred_dict[0] == "admin" and cred_dict[1] == "123456":
+		if cred_dict[0] == WS_USERNAME and cred_dict[1] == WS_PASSWORD:
 			response_str = "Connected!"
 			await websocket.send(response_str)
 			return True
@@ -60,13 +61,25 @@ async def recv_msg(websocket):
 			'data' : None
 		}
 
-		data = ''
-		data = await websocket.recv()
-		print(f"Received data: {data}")
+		try:
+			data = await websocket.recv()
+			print(f"Received data: {data}")
+		except websockets.exceptions.ConnectionClosed:
+			print("WebSocket connection closed by client")
+			break
+		except Exception as e:
+			print(f"Error receiving data: {e}")
+			break
+			
 		try:
 			data = json.loads(data)
-		except Exception as e:
-			print('not A JSON')
+		except json.JSONDecodeError as e:
+			print(f'Invalid JSON received: {e}')
+			response['status'] = 'error'
+			response['title'] = 'invalid_json'
+			response['data'] = 'Invalid JSON format received'
+			await websocket.send(json.dumps(response))
+			continue
 
 		if not data:
 			continue
@@ -170,7 +183,7 @@ if __name__ == '__main__':
 
 	while  1:
 		try:
-			start_server = websockets.serve(main_logic, '0.0.0.0', 5000)
+			start_server = websockets.serve(main_logic, '0.0.0.0', WEBSOCKET_PORT)
 			asyncio.get_event_loop().run_until_complete(start_server)
 			print('waiting for connection...')
 			break

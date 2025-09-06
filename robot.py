@@ -4,125 +4,87 @@
 import time
 import json
 import serial
+from config import SERIAL_PORT, SERIAL_BAUD_RATE, SERIAL_TIMEOUT, ROBOT_COMMANDS
 
-ser = serial.Serial("/dev/serial0",115200)
+ser = serial.Serial(SERIAL_PORT, SERIAL_BAUD_RATE, timeout=SERIAL_TIMEOUT)
 dataCMD = json.dumps({'var':"", 'val':0, 'ip':""})
 upperGlobalIP = 'UPPER IP'
 
 
 pitch, roll = 0, 0
 
+def send_robot_command(var, val, action_name):
+	"""Helper function to send robot commands with error handling"""
+	try:
+		dataCMD = json.dumps({'var': var, 'val': val})
+		ser.write(dataCMD.encode())
+		ser.flush()
+		print(f'robot-{action_name}')
+	except Exception as e:
+		print(f'Error sending {action_name} command: {e}')
 
 def setUpperIP(ipInput):
 	global upperGlobalIP
 	upperGlobalIP = ipInput
 
 def forward(speed=100):
-	dataCMD = json.dumps({'var':"move", 'val':1})
-	ser.write(dataCMD.encode())
-	print('robot-forward')
+	send_robot_command("move", ROBOT_COMMANDS['move']['forward'], "forward")
 
 def backward(speed=100):
-	dataCMD = json.dumps({'var':"move", 'val':5})
-	ser.write(dataCMD.encode())
-	print('robot-backward')
+	send_robot_command("move", ROBOT_COMMANDS['move']['backward'], "backward")
 
 def left(speed=100):
-	dataCMD = json.dumps({'var':"move", 'val':2})
-	ser.write(dataCMD.encode())
-	print('robot-left')
+	send_robot_command("move", ROBOT_COMMANDS['move']['left'], "left")
 
 def right(speed=100):
-	dataCMD = json.dumps({'var':"move", 'val':4})
-	ser.write(dataCMD.encode())
-	print('robot-right')
+	send_robot_command("move", ROBOT_COMMANDS['move']['right'], "right")
 
 def stopLR():
-	dataCMD = json.dumps({'var':"move", 'val':6})
-	ser.write(dataCMD.encode())
-	print('robot-stop')
+	send_robot_command("move", ROBOT_COMMANDS['move']['stop_lr'], "stop")
 
 def stopFB():
-	dataCMD = json.dumps({'var':"move", 'val':3})
-	ser.write(dataCMD.encode())
-	print('robot-stop')
+	send_robot_command("move", ROBOT_COMMANDS['move']['stop_fb'], "stop")
 
 
 
 def lookUp():
-	dataCMD = json.dumps({'var':"ges", 'val':1})
-	ser.write(dataCMD.encode())
-	print('robot-lookUp')
+	send_robot_command("ges", ROBOT_COMMANDS['ges']['look_up'], "lookUp")
 
 def lookDown():
-	dataCMD = json.dumps({'var':"ges", 'val':2})
-	ser.write(dataCMD.encode())
-	print('robot-lookDown')
+	send_robot_command("ges", ROBOT_COMMANDS['ges']['look_down'], "lookDown")
 
 def lookStopUD():
-	dataCMD = json.dumps({'var':"ges", 'val':3})
-	ser.write(dataCMD.encode())
-	print('robot-lookStopUD')
+	send_robot_command("ges", ROBOT_COMMANDS['ges']['look_stop_ud'], "lookStopUD")
 
 def lookLeft():
-	dataCMD = json.dumps({'var':"ges", 'val':4})
-	ser.write(dataCMD.encode())
-	print('robot-lookLeft')
+	send_robot_command("ges", ROBOT_COMMANDS['ges']['look_left'], "lookLeft")
 
 def lookRight():
-	dataCMD = json.dumps({'var':"ges", 'val':5})
-	ser.write(dataCMD.encode())
-	print('robot-lookRight')
+	send_robot_command("ges", ROBOT_COMMANDS['ges']['look_right'], "lookRight")
 
 def lookStopLR():
-	dataCMD = json.dumps({'var':"ges", 'val':6})
-	ser.write(dataCMD.encode())
-	print('robot-lookStopLR')
+	send_robot_command("ges", ROBOT_COMMANDS['ges']['look_stop_lr'], "lookStopLR")
 
 
 
 def steadyMode():
-	dataCMD = json.dumps({'var':"funcMode", 'val':1})
-	ser.write(dataCMD.encode())
-	print('robot-steady')
+	send_robot_command("funcMode", ROBOT_COMMANDS['funcMode']['steady'], "steady")
 
 def jump():
-	dataCMD = json.dumps({'var':"funcMode", 'val':4})
-	ser.write(dataCMD.encode())
-	print('robot-jump')
+	send_robot_command("funcMode", ROBOT_COMMANDS['funcMode']['jump'], "jump")
 
 def handShake():
-	dataCMD = json.dumps({'var':"funcMode", 'val':3})
-	ser.write(dataCMD.encode())
-	print('robot-handshake')
+	send_robot_command("funcMode", ROBOT_COMMANDS['funcMode']['handshake'], "handshake")
 
 
 
 def lightCtrl(colorName, cmdInput):
-	colorNum = 0
-	if colorName == 'off':
-		colorNum = 0
-	elif colorName == 'blue':
-		colorNum = 1
-	elif colorName == 'red':
-		colorNum = 2
-	elif colorName == 'green':
-		colorNum = 3
-	elif colorName == 'yellow':
-		colorNum = 4
-	elif colorName == 'cyan':
-		colorNum = 5
-	elif colorName == 'magenta':
-		colorNum = 6
-	elif colorName == 'cyber':
-		colorNum = 7
-	dataCMD = json.dumps({'var':"light", 'val':colorNum})
-	ser.write(dataCMD.encode())
+	colorNum = ROBOT_COMMANDS['light'].get(colorName, 0)
+	send_robot_command("light", colorNum, f"light-{colorName}")
 
 
 def buzzerCtrl(buzzerCtrl, cmdInput):
-	dataCMD = json.dumps({'var':"buzzer", 'val':buzzerCtrl})
-	ser.write(dataCMD.encode())
+	send_robot_command("buzzer", buzzerCtrl, f"buzzer-{'on' if buzzerCtrl else 'off'}")
 
 
 

@@ -1,26 +1,30 @@
 import serial
 import json
 import time
-
-# Set the correct serial port for your Raspberry Pi
-SERIAL_PORT = '/dev/serial0'  # or '/dev/ttyS0' depending on your Pi model
-BAUD_RATE = 115200
+from config import SERIAL_PORT, SERIAL_BAUD_RATE, SERIAL_TIMEOUT
 
 class ESP32Serial:
-    def __init__(self, port=SERIAL_PORT, baudrate=BAUD_RATE):
-        self.ser = serial.Serial(port, baudrate, timeout=1)
+    def __init__(self, port=SERIAL_PORT, baudrate=SERIAL_BAUD_RATE):
+        self.ser = serial.Serial(port, baudrate, timeout=SERIAL_TIMEOUT)
         time.sleep(2)  # Wait for serial connection to initialize
 
     def send_command(self, var, val):
-        cmd = {"var": var, "val": val}
-        self.ser.write((json.dumps(cmd) + "\n").encode())
-        print(f"Sent: {cmd}")
+        try:
+            cmd = {"var": var, "val": val}
+            self.ser.write((json.dumps(cmd) + "\n").encode())
+            self.ser.flush()  # Ensure data is sent
+            print(f"Sent: {cmd}")
+        except Exception as e:
+            print(f"Error sending command to ESP32: {e}")
 
     def read_response(self):
-        if self.ser.in_waiting:
-            response = self.ser.readline().decode().strip()
-            print(f"Received: {response}")
-            return response
+        try:
+            if self.ser.in_waiting:
+                response = self.ser.readline().decode().strip()
+                print(f"Received: {response}")
+                return response
+        except Exception as e:
+            print(f"Error reading response from ESP32: {e}")
         return None
 
     def close(self):

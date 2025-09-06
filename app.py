@@ -8,6 +8,7 @@ import camera_opencv
 # from camera_opencv import Camera
 # from camera_opencv import commandAct
 import threading
+from config import FLASK_HOST, FLASK_PORT
 
 # Raspberry Pi camera module (requires picamera package)
 # from camera_pi import Camera
@@ -74,7 +75,7 @@ class webapp:
         camera.colorFindSet(H, S, V)
 
     def thread(self):
-        app.run(host='0.0.0.0', threaded=True)
+        app.run(host=FLASK_HOST, port=FLASK_PORT, threaded=True)
 
     def startthread(self):
         fps_threading=threading.Thread(target=self.thread)
